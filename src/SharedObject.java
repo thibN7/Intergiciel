@@ -19,7 +19,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public static enum LockState { NL,WLT,RLT,RLC,WLC,RLT_WLC }
 	private LockState lockState;
 	private Lock mutex=new ReentrantLock();
-	
+
 	public SharedObject(Object o) {
 		this.id=0;
 		this.obj=o;
@@ -58,20 +58,57 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
     // invoked by the user program on the client node
     public synchronized void unlock() {
-    	
+    	switch(this.lockState) {
+    		case RLT: this.lockState=LockState.RLC; break;
+    		case WLT: this.lockState=LockState.WLC; break;
+    		case RLT_WLC: this.lockState=LockState.WLC; break;
+    		case WLC: //Erreur
+    		case RLC: //Erreur
+    		case NL: //Erreur
+    			break;
+    	}
     }
 
 
     // callback invoked remotely by the server
     public synchronized Object reduce_lock() {
-		return null;
+    	SharedObject so=new SharedObject(null);
+    	switch(this.lockState) {
+    		case WLT: this.lockState=LockState.RLC; break;
+    		case WLC: this.lockState=LockState.RLC; break;
+    		case RLT_WLC: this.lockState=LockState.RLT; break;
+    		case RLT: //Erreur
+    		case RLC: //Erreur
+    		case NL: //Erreur
+    			break;
+    	}
+    	return so.obj;
     }
 
     // callback invoked remotely by the server
     public synchronized void invalidate_reader() {
+    	switch(this.lockState) {
+    		case RLT: this.lockState=LockState.NL; break;
+    		case RLC: this.lockState=LockState.NL; break;
+    		case RLT_WLC: //Erreur
+    		case WLT: //Erreur
+    		case WLC: //Erreur
+    		case NL: //Erreur
+    			break;
+    	}
     }
 
     public synchronized Object invalidate_writer() {
-		return null;
+    	SharedObject so=new SharedObject(null);
+    	switch(this.lockState) {
+    		case WLT: this.lockState=LockState.NL; break;
+    		case WLC: this.lockState=LockState.NL; break;
+    		case RLT_WLC: this.lockState=LockState.NL; break;
+    		case RLT: //Erreur
+    		case RLC: //Erreur
+    		case NL: //Erreur
+    			break;
+    	}
+    	return so.obj;
     }
 }

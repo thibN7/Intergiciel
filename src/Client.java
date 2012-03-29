@@ -9,13 +9,13 @@ import java.util.*;
 import java.net.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
-	private static Server server;
+	private static Server_itf server;
 	private static Client client;
     private static HashMap<Integer,SharedObject_itf> objects=new HashMap<Integer,SharedObject_itf>();
 
     public Client() throws RemoteException {
         super();
-        Client.server=null;
+        //Client.server=null;
     }
 
 
@@ -27,17 +27,17 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     public static void init() {
 	    	//serveur ? interroger registry
 	    	//lancer serveur et l'enregistrer
-    	if (Client.server == null) {
+    	//if (Client.server == null) {
 	    	try {
-				Client.server=(Server)Naming.lookup("rmi://localhost:8081/TVServer");
+				Client.server=(Server_itf)Naming.lookup("rmi://localhost:8082/TVServer");
 			}
 			catch(Exception e) { e.printStackTrace(); }
-			if (Client.server == null) System.exit(0);
-    	}
+    	//}
     	try {
 			Client.client=new Client();
 		}
 		catch(RemoteException e) { e.printStackTrace(); }
+		if (Client.server == null) System.exit(0);
     }
 	
     // lookup in the name server
@@ -83,8 +83,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     public static Object lock_read(int id) {
     	Object res=null;
 		try {
-			if (Client.objects.get(id) != null)
+			if (Client.objects.get(id) != null) {
 				res=Client.server.lock_read(id,Client.client);
+			}
 		}
 		catch(RemoteException e) { e.printStackTrace(); }
 		return res;
@@ -106,7 +107,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     	SharedObject res=null;
 		if ((res=(SharedObject)Client.objects.get(id)) != null)
 			res.reduce_lock();
-		return res;
+		return res.obj;
     }
 
 
@@ -123,6 +124,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     	SharedObject res=null;
 		if ((res=(SharedObject)Client.objects.get(id)) != null)
 			res.invalidate_writer();
-		return res;
+		return res.obj;
     }
 }

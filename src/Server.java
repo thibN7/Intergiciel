@@ -18,15 +18,16 @@ public class Server extends UnicastRemoteObject implements Server_itf, Serializa
 	
     public static void main (String args[]) {
         try {
-            LocateRegistry.createRegistry(8081);
-            Naming.bind("rmi://localhost:8081/TVServer",new Server());
+        	int port=8082;
+            LocateRegistry.createRegistry(port);
+            Naming.bind("rmi://localhost:" + port + "/TVServer",new Server());
         }
         catch (Exception e) { System.err.println(e); }
         System.out.println ("Le serveur est pret.");
     }
     
 	public int lookup(String name) throws RemoteException {
-		return this.name_server.get(name);
+		return (this.name_server.get(name) != null)?this.name_server.get(name):0;
 	}
 	public void register(String name,int id) throws RemoteException {
 		if (this.servers.get(id) != null) this.name_server.put(name,id);

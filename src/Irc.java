@@ -25,7 +25,6 @@ public class Irc extends Frame {
         }
         myName = argv[0];
 	
-        /*
         // initialize the system
         Client.init();
 		
@@ -36,9 +35,8 @@ public class Irc extends Frame {
             so=Client.create(new Sentence());
             Client.register("IRC",so);
         }
-        */
         // create the graphical part
-        new Irc(null);
+        new Irc(so);
     }
 
     public Irc(SharedObject s) {
