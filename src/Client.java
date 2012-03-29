@@ -47,8 +47,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			int id=Client.server.lookup(name);
 			if (id > 0) {
 				res=new SharedObject(null);
-				res.id=id;
-				Client.objects.put(res.id,res);
+				res.setId(id);
+				Client.objects.put(res.getId(),res);
 			}
 		}
 		catch(RemoteException e) { e.printStackTrace(); }
@@ -59,7 +59,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     public static void register(String name,SharedObject_itf so) {
     	try {
     		SharedObject so_=(SharedObject)so;
-			Client.server.register(name,so_.id);
+			Client.server.register(name,so_.getId());
 		}
 		catch(RemoteException e) { e.printStackTrace(); }
     }
@@ -68,10 +68,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     public static SharedObject create(Object o) {
     	SharedObject res=new SharedObject(o);
     	try {
-			res.id=Client.server.create(o);
+			res.setId(Client.server.create(o));
 		}
 		catch(RemoteException e) { e.printStackTrace(); }
-		Client.objects.put(res.id,res);
+		Client.objects.put(res.getId(),res);
     	return res;
     }
 	

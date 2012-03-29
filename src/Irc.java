@@ -68,7 +68,7 @@ public class Irc extends Frame {
         button3.addActionListener(new unlockListener(this));
         this.add(button3);
 		
-        this.setSize(470,300);
+        this.setSize(550,300);
         this.text.setBackground(Color.black); 
         this.show();
 		
@@ -95,7 +95,7 @@ class readListener implements ActionListener {
         //this.irc.sentence.unlock();
 		
         // display the read value
-        //this.irc.text.append(s+"\n");
+        this.irc.text.append(Irc.s+"\n");
     }
 }
 
@@ -151,9 +151,6 @@ class unlockListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // unlock the object
         this.irc.sentence.unlock();
-		
-        // display the read value
-        this.irc.text.append(Irc.s+"\n");
     }
 }
 
