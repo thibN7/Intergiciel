@@ -1,0 +1,12 @@
+Créez ensuite une branche portant votre nom et prénom.
+
+cd Intergiciel
+git checkout -b nom_prenom
+
+Et travaillez dans cette branche.
+
+Commitez dans la branche nom_prenom ou une autre branche (pas master).
+
+Reversez votre code sur github:
+git push origin nom_prenom 
+
