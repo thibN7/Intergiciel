@@ -4,12 +4,17 @@ import java.io.Serializable;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class Server implements Server_itf, Serializable {
+public class Server extends UnicastRemoteObject implements Server_itf, Serializable {
 	private static int object_id=1;
 	private HashMap<String,Integer> name_server=new HashMap<String,Integer>();
 	private HashMap<Integer,ServerObject> servers=new HashMap<Integer,ServerObject>();
+
+	protected Server() throws RemoteException {
+		super();
+	}
 	
     public static void main (String args[]) {
         try {
