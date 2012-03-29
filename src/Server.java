@@ -1,40 +1,40 @@
 package src;
 
+import java.io.Serializable;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.HashMap;
 
-public class Server implements Server_itf {
+public class Server implements Server_itf, Serializable {
+	private static int object_id=1;
+	private HashMap<String,Integer> name_server=new HashMap<String,Integer>();
+	private HashMap<Integer,ServerObject> servers=new HashMap<Integer,ServerObject>();
+	
     public static void main (String args[]) {
         try {
-            //  Création du serveur de noms
             LocateRegistry.createRegistry(8081);
-            //  Enregistrement de l'instance de parking dans le serveur local
-            Naming.bind("rmi://localhost:8081/IRCServer",new Server());
-        } catch (Exception e) { System.err.println (e); }
-        // Service pret : attente d'appels
-        System.out.println ("Le superviseur est pret.");
+            Naming.bind("rmi://localhost:8081/TVServer",new Server());
+        }
+        catch (Exception e) { System.err.println(e); }
+        System.out.println ("Le serveur est pret.");
     }
     
 	public int lookup(String name) throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.name_server.get(name);
 	}
 	public void register(String name,int id) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		if (this.servers.get(id) != null) this.name_server.put(name,id);
 	}
 	public int create(Object o) throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+		this.servers.put(Server.object_id,new ServerObject(Server.object_id,o));
+		return Server.object_id++;
 	}
 	public Object lock_read(int id,Client_itf client) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return (this.servers.get(id)).lock_read(client);
 	}
 	public Object lock_write(int id,Client_itf client) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return (this.servers.get(id)).lock_write(client);
 	}
 
 }

@@ -9,6 +9,7 @@ import java.net.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 	private static Server server;
+	private static Client client;
 
     public Client() throws RemoteException {
         super();
@@ -26,32 +27,48 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	    	//lancer serveur et l'enregistrer
     	if (Client.server == null) {
 	    	try {
-				Client.server=(Server)Naming.lookup("rmi://localhost:8081/IRC");
+				Client.server=(Server)Naming.lookup("rmi://localhost:8081/TVServer");
 			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
+			catch(Exception e) { e.printStackTrace(); }
+			if (Client.server == null) System.exit(0);
     	}
+    	try {
+			Client.client=new Client();
+		}
+		catch(RemoteException e) { e.printStackTrace(); }
     }
 	
     // lookup in the name server
     public static SharedObject lookup(String name) {
-		return null;
+    	SharedObject res=null;
+    	try {
+			int id=Client.server.lookup(name);
+			if (id > 0) {
+				res=new SharedObject(null);
+				res.id=id;
+			}
+		}
+		catch(RemoteException e) { e.printStackTrace(); }
+		return res;
     }		
 	
     // binding in the name server
     public static void register(String name,SharedObject_itf so) {
     	try {
-			Client.server.register(name,0);
+    		SharedObject so_=(SharedObject)so;
+			Client.server.register(name,so_.id);
 		}
-		catch(RemoteException e) {
-			e.printStackTrace();
-		}
+		catch(RemoteException e) { e.printStackTrace(); }
     }
 
     // creation of a shared object
     public static SharedObject create(Object o) {
-    	return new SharedObject(o);
+    	SharedObject res=new SharedObject(o);
+    	try {
+			res.id=Client.server.create(o);
+		}
+		catch(RemoteException e) { e.printStackTrace(); }
+    	return res;
     }
 	
     /////////////////////////////////////////////////////////////
@@ -60,7 +77,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // request a read lock from the server
     public static Object lock_read(int id) {
-		return id;
+    	Object res=null;
+		try {
+			res=Client.server.lock_read(id,Client.client);
+		}
+		catch(RemoteException e) { e.printStackTrace(); }
+		return res;
     }
 
     // request a write lock from the server
@@ -70,7 +92,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // receive a lock reduction request from the server
     public Object reduce_lock(int id) throws java.rmi.RemoteException {
-		return id;
+		return null;
     }
 
 
