@@ -2,5 +2,7 @@ package src;
 
 public class ServerObject {
 	//1so avec num
-	//clients qui s'adressent ˆ lui
+	//clients qui s'adressent ï¿½ lui
+	
+	// ATTENTION c'est thibault qui va coder :D
 }
