@@ -1,0 +1,51 @@
+TESTS UNITAIRES
+------------------------------
+
+- Tests de la classe Server Object :
+
+Création d'1 écrivain : tester qu'il existe en tant qu'écrivain : FAIT : Scenario 1
+
+Création de 2 lecteurs : tester qu'il existe 2 lecteurs : FAIT : Scenario 2
+
+Création de 2 clients : on crée un lecteur, puis on crée un écrivan (cela invalide le lecteur) : FAIT 
+
+
+- Cas de figure du cours 
+
+1) Un client : RLC --> lock_read --> RLT (en local). Etat sur le serveur doit rester RL.
+
+2) Un client : NL --> lock_read --> RLT. Au niveau du serveur : NL --> RL.
+
+3) Deux clients. Un client : NL --> lock_read --> RLT. Autre client : RLT (reste dans cet état). Au niveau du serveur : on reste en RL.
+
+4) Deux clients. Un client : NL --> lock_read --> RLT. Autre client : WLC --> RLC. Au niveau du serveur : WL --> RL (reduce_lock).
+
+5) Un client : WLC --> lock_read --> RLT_WLC. C'est local. Du coup, au niveau du serveur : WL --> WL.
+
+6) Deux clients. Un client : NL --> lock_read --> RLT. Autre client : RLT_WLC --> RLT. Au niveau du serveur : WL --> RL (reduce_lock).
+
+7) Deux clients. Un client : NL --> lock_write --> WLT. Autre client : RLC --> NL. Au niveau du serveur : RL --> WL (invalidate_reader)
+
+8) Deux clients. Un client : NL --> lock_write --> WLT. Autre client : WLC --> NL. Au niveau du serveur : WL --> WL (invalidate_writer).
+
+9) Deux clients. Un client : RLC --> lock_write --> WLT. Autre client : RLC --> NL. Au niveau du serveur : RL --> WL (invalidate_reader).
+
+10) VOIR POLYCOP
+
+11) VOIR POLYCOP
+
+------------------------------------------------------------------------------------------
+
+TESTS INTEGRATION
+------------------------------
+
+Scénario 1 (Appels par le code utilisateur)
+_______________
+
+NL --> lock_write --> WLT --> unlock --> WLC --> lock-write --> WLT --> unlock --> WLC --> lock_read --> RLT_WLC --> unlock --> WLC --> lock_write -- WLT
+
+
+Scénario 2 (Appels par le code utilisateur)
+_______________
+
+NL --> lock_read --> RLT --> unlock --> RLC --> lock_read --> RLT --> unlock --> RLC --> lock_write --> WLT --> unlock --> WLC --> lock_write --> WLT

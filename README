@@ -10,3 +10,11 @@ Commitez dans la branche nom_prenom ou une autre branche (pas master).
 Reversez votre code sur github:
 git push origin nom_prenom 
 
+
+
+-------------------------------
+
+QUESTIONS PROFESSEURS :
+
+parler du reduce_lock dans la classe SharedObject.
+
