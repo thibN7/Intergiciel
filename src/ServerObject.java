@@ -45,15 +45,9 @@ public class ServerObject {
 		//String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
     	//SharedObject.dump(1,"ServerObject lock_write (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
-		Object obj ;
-
 		mutexMonitor.lock();
 
-		if (!writerExists() && !readersExist()) {
-			obj = this.object;
-		}
-		else
-		{
+		if (this.lockState == LockState.Write_Locked) {
 			if (writerExists()) {
 				this.object = this.writer.invalidate_writer(this.id);
 				// writer == false
@@ -62,15 +56,20 @@ public class ServerObject {
 				reader.invalidate_reader(this.id);
 			}
 			listReaders.clear();
-			obj = this.object;
 		}
+		
 		this.writer = client;
 		
 		System.out.println("Etat du ServerObject avant lock_write : " + this.lockState);
 		switch(this.lockState) {
-			case No_Lock : this.lockState = LockState.Write_Locked; break;
-			case Read_Locked : this.lockState = LockState.Write_Locked; break;
-			case Write_Locked : break; // On reste dans l'etat Write_Locked
+			case No_Lock : 
+				this.lockState = LockState.Write_Locked; 
+				break;
+			case Read_Locked : 
+				this.lockState = LockState.Write_Locked; 
+				break;
+			case Write_Locked : 
+				break; // On reste dans l'etat Write_Locked
 		}
 		System.out.println("Etat du ServerObject après lock_write : " + this.lockState);
 
@@ -78,7 +77,7 @@ public class ServerObject {
 		//d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
     	//SharedObject.dump(1,"ServerObject lock_write (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
-		return obj;		
+		return this.object;		
 	}
 
 
@@ -90,7 +89,7 @@ public class ServerObject {
 
 		mutexMonitor.lock();
 
-		if (writerExists()) {
+		if (this.lockState == LockState.Write_Locked && writerExists()) {
 			this.object = this.writer.reduce_lock(this.id);
 			this.writer = null ;
 		}
@@ -99,9 +98,14 @@ public class ServerObject {
 		
 		System.out.println("Etat du ServerObject avant lock_read : " + this.lockState);
 		switch(this.lockState) {
-			case No_Lock : this.lockState = LockState.Read_Locked; break;
-			case Read_Locked : break; // On reste dans cet etat
-			case Write_Locked : this.lockState = LockState.Read_Locked; break;
+			case No_Lock : 
+				this.lockState = LockState.Read_Locked; 
+				break;
+			case Read_Locked : 
+				break; // On reste dans cet etat
+			case Write_Locked : 
+				this.lockState = LockState.Read_Locked; 
+				break;
 		}
 		System.out.println("Etat du ServerObject apres lock_read : " + this.lockState);
 
