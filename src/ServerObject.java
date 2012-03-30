@@ -14,7 +14,7 @@ public class ServerObject {
 	private int id ;
 	private Object object ;
 	private ArrayList<Client_itf> listReaders = new ArrayList<Client_itf>() ;
-	private Client_itf writer ;
+	private Client_itf writer =null;
 	private final Lock mutexMonitor = new ReentrantLock();
 
 	// Constructor
@@ -36,6 +36,8 @@ public class ServerObject {
 
 	// LOCK_WRITE
 	public Object lock_write(Client_itf client) throws RemoteException {
+		String d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
+    	SharedObject.dump(1,"lock_write (start) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
 
 		Object obj ;
 
@@ -59,6 +61,8 @@ public class ServerObject {
 		this.writer = client;
 
 		mutexMonitor.unlock();
+		d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
+    	SharedObject.dump(1,"lock_write (end) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
 
 		return obj;		
 	}
@@ -66,6 +70,8 @@ public class ServerObject {
 
 	// LOCK_READ
 	public Object lock_read(Client_itf client) throws RemoteException {
+		String d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
+    	SharedObject.dump(1,"lock_read (start) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
 
 		mutexMonitor.lock();
 
@@ -77,6 +83,8 @@ public class ServerObject {
 		this.listReaders.add(client);
 
 		mutexMonitor.unlock();
+		d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
+    	SharedObject.dump(1,"lock_read (end) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
 
 		return this.object;
 	}

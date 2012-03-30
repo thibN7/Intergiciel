@@ -1,21 +1,24 @@
 package src;
 
 
-
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
-import java.rmi.registry.*;
 import java.util.*;
-import java.net.*;
+
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 	private static Server_itf server;
 	private static Client client;
+	public static long debug_id=System.currentTimeMillis();
+	public long idebug_id=Client.debug_id;
     private static HashMap<Integer,SharedObject_itf> objects=new HashMap<Integer,SharedObject_itf>();
 
     public Client() throws RemoteException {
         super();
-        //Client.server=null;
+    }
+    
+    public long get_debugId() {
+    	return this.idebug_id;
     }
 
 
@@ -25,14 +28,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // initialization of the client layer
     public static void init() {
-	    	//serveur ? interroger registry
-	    	//lancer serveur et l'enregistrer
-    	//if (Client.server == null) {
-	    	try {
-				Client.server=(Server_itf)Naming.lookup("rmi://localhost:8082/TVServer");
-			}
-			catch(Exception e) { e.printStackTrace(); }
-    	//}
+    	//serveur ? interroger registry
+    	//lancer serveur et l'enregistrer
+    	try {
+			Client.server=(Server_itf)Naming.lookup("rmi://localhost:8082/TVServer");
+		}
+		catch(Exception e) { e.printStackTrace(); }
     	try {
 			Client.client=new Client();
 		}
