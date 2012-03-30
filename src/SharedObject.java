@@ -46,9 +46,16 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	System.out.println("Etat du SharedObject avant lock_read :" + this.lockState);
     	synchronized(this) {
 	    	switch (this.lockState) {
-	    		case NL: this.obj=Client.lock_read(this.id); this.lockState=LockState.RLT; break;
-	    		case RLC: this.lockState=LockState.RLT; break;
-	    		case WLC: this.lockState=LockState.RLT_WLC; break;
+	    		case NL: 
+	    			this.obj=Client.lock_read(this.id); 
+	    			this.lockState=LockState.RLT; 
+	    			break;
+	    		case RLC: 
+	    			this.lockState=LockState.RLT; 
+	    			break;
+	    		case WLC: 
+	    			this.lockState=LockState.RLT_WLC; 
+	    			break;
 	    		case RLT: //Erreur : unlock oublié
 	    		case WLT: //Erreur : unlock oublié
 	    		case RLT_WLC: //Erreur : unlock oublié
@@ -64,10 +71,18 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	//dump(Client.debug_id,"lock_write -->");
     	System.out.println("Etat du SharedObject avant lock_write :" + this.lockState);
     	synchronized(this) {
-	    	switch (this.lockState) {
-	    		case NL: this.obj=Client.lock_write(this.id); this.lockState=LockState.WLT; break;
-	    		case RLC: this.obj=Client.lock_write(this.id); this.lockState=LockState.WLT; break;
-	    		case WLC: this.lockState=LockState.WLT; break;
+        	switch (this.lockState) {
+	    		case NL: 
+	    			this.obj=Client.lock_write(this.id); 
+	    			this.lockState=LockState.WLT; 
+	    			break;
+	    		case RLC: 
+	    			this.obj=Client.lock_write(this.id); 
+	    			this.lockState=LockState.WLT; 
+	    			break;
+	    		case WLC: 
+	    			this.lockState=LockState.WLT; 
+	    			break;
 	    		case WLT: //Erreur : unlock oublié
 	    		case RLT: //Erreur : unlock oublié
 	    		case RLT_WLC: //Erreur : unlock oublié
@@ -83,9 +98,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	System.out.println("SharedObject invoked unlock");
     	System.out.println("Etat du SharedObject avant unlock :" + this.lockState);
     	switch(this.lockState) {
-    		case RLT: this.lockState=LockState.RLC; break;
-    		case WLT: this.lockState=LockState.WLC; break;
-    		case RLT_WLC: this.lockState=LockState.WLC; break;
+    		case RLT: 
+    			this.lockState=LockState.RLC; 
+    			break;
+    		case WLT: 
+    			this.lockState=LockState.WLC; 
+    			break;
+    		case RLT_WLC: 
+    			this.lockState=LockState.WLC; 
+    			break;
     		case WLC: //Erreur : lock oublié
     		case RLC: //Erreur : lock oublié
     		case NL: //Erreur : lock oublié
@@ -102,9 +123,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	System.out.println("Etat du SharedObject avant callback reduce_lock :" + this.lockState);
     	SharedObject so=new SharedObject(null);
     	switch(this.lockState) {
-    		case WLT: this.lockState=LockState.RLC; break; //TODO : Attente
-    		case WLC: this.lockState=LockState.RLC; break;
-    		case RLT_WLC: this.lockState=LockState.RLT; break;
+    		case WLT: 
+    			this.lockState=LockState.RLC; 
+    			break; //TODO : Attente
+    		case WLC: 
+    			this.lockState=LockState.RLC; 
+    			break;
+    		case RLT_WLC: 
+    			this.lockState=LockState.RLT; 
+    			break;
     		case RLT: //Erreur : état invalide
     		case RLC: //Erreur : état invalide
     		case NL: //Erreur : état invalide
@@ -120,8 +147,12 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	System.out.println("SharedObject received invalidate_reader");
     	System.out.println("Etat du SharedObject avant callback invalidate_reader :" + this.lockState);
     	switch(this.lockState) {
-    		case RLT: this.lockState=LockState.NL; break; // TODO : attente
-    		case RLC: this.lockState=LockState.NL; break;
+    		case RLT: 
+    			this.lockState=LockState.NL; 
+    			break; // TODO : attente
+    		case RLC: 
+    			this.lockState=LockState.NL; 
+    			break;
     		case RLT_WLC: //Erreur : état invalide
     		case WLT: //Erreur : conflit avec un write_lock
     		case WLC: //Erreur : état invalide
@@ -137,9 +168,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	System.out.println("Etat du SharedObject avant callback invalidate_writer :" + this.lockState);
     	SharedObject so=new SharedObject(null);
     	switch(this.lockState) {
-    		case WLT: this.lockState=LockState.NL; break; //TODO : attente
-    		case WLC: this.lockState=LockState.NL; break;
-    		case RLT_WLC: this.lockState=LockState.NL; break; //TODO : attente
+    		case WLT: 
+    			this.lockState=LockState.NL; 
+    			break; //TODO : attente
+    		case WLC: 
+    			this.lockState=LockState.NL; 
+    			break;
+    		case RLT_WLC: 
+    			this.lockState=LockState.NL; //TODO : attente
+    			break; 
     		case RLT: //Erreur : état invalide
     		case RLC: //Erreur : état invalide
     		case NL: //Erreur : état invalide
