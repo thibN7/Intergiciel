@@ -18,7 +18,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     }
     
     public long get_debugId() {
-    	return this.idebug_id;
+    	return Client.debug_id;
     }
 
 
@@ -31,7 +31,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     	//serveur ? interroger registry
     	//lancer serveur et l'enregistrer
     	try {
-			Client.server=(Server_itf)Naming.lookup("rmi://localhost:8082/TVServer");
+			Client.server=(Server_itf)Naming.lookup("rmi://localhost:8081/TVServer");
 		}
 		catch(Exception e) { e.printStackTrace(); }
     	try {

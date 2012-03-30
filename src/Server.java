@@ -18,7 +18,7 @@ public class Server extends UnicastRemoteObject implements Server_itf, Serializa
 	
     public static void main (String args[]) {
         try {
-        	int port=8082;
+        	int port=8081;
             LocateRegistry.createRegistry(port);
             Naming.bind("rmi://localhost:" + port + "/TVServer",new Server());
         }

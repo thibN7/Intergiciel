@@ -7,8 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerObject {
 
-	// 1 Shared object avec un numŽro
-	// clients qui s'adressent ˆ lui
+	// 1 Shared object avec un numÅ½ro
+	// clients qui s'adressent Ë† lui
 
 	// Attributes
 	private int id ;
@@ -36,8 +36,8 @@ public class ServerObject {
 
 	// LOCK_WRITE
 	public Object lock_write(Client_itf client) throws RemoteException {
-		String d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
-    	SharedObject.dump(1,"lock_write (start) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
+		String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	SharedObject.dump(1,"lock_write (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		Object obj ;
 
@@ -61,8 +61,8 @@ public class ServerObject {
 		this.writer = client;
 
 		mutexMonitor.unlock();
-		d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
-    	SharedObject.dump(1,"lock_write (end) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
+		d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	SharedObject.dump(1,"lock_write (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		return obj;		
 	}
@@ -70,8 +70,8 @@ public class ServerObject {
 
 	// LOCK_READ
 	public Object lock_read(Client_itf client) throws RemoteException {
-		String d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
-    	SharedObject.dump(1,"lock_read (start) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
+		String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	SharedObject.dump(1,"lock_read (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		mutexMonitor.lock();
 
@@ -83,8 +83,8 @@ public class ServerObject {
 		this.listReaders.add(client);
 
 		mutexMonitor.unlock();
-		d=""; for(Client_itf a : this.listReaders) d+=", "+((Client)a).idebug_id;
-    	SharedObject.dump(1,"lock_read (end) --> (" + ((this.writer == null)?"aucun":((Client)this.writer).idebug_id) +  d + ")");
+		d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	SharedObject.dump(1,"lock_read (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		return this.object;
 	}
