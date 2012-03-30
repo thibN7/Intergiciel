@@ -27,19 +27,28 @@ public class Server extends UnicastRemoteObject implements Server_itf, Serializa
     }
     
 	public int lookup(String name) throws RemoteException {
+		System.out.println("Server lookup name " + name) ;
 		return (this.name_server.get(name) != null)?this.name_server.get(name):0;
 	}
+	
 	public void register(String name,int id) throws RemoteException {
+		System.out.println("Server register name " + name + " and id " + id) ;
 		if (this.servers.get(id) != null) this.name_server.put(name,id);
 	}
+	
 	public int create(Object o) throws RemoteException {
+		System.out.println("Server create object " + o);
 		this.servers.put(Server.object_id,new ServerObject(Server.object_id,o));
 		return Server.object_id++;
 	}
+	
 	public Object lock_read(int id,Client_itf client) throws RemoteException {
+		System.out.println("Server lock_read id " + id + " and client " + client);
 		return (this.servers.get(id)).lock_read(client);
 	}
+	
 	public Object lock_write(int id,Client_itf client) throws RemoteException {
+		System.out.println("Server lock_write id " + id + " and client " + client);
 		return (this.servers.get(id)).lock_write(client);
 	}
 

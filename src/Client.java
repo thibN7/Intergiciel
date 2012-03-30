@@ -28,6 +28,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // initialization of the client layer
     public static void init() {
+    	System.out.println("Init Client");
     	//serveur ? interroger registry
     	//lancer serveur et l'enregistrer
     	try {
@@ -43,6 +44,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
     // lookup in the name server
     public static SharedObject lookup(String name) {
+    	System.out.println("Client lookup name " + name);
     	SharedObject res=null;
     	try {
 			int id=Client.server.lookup(name);
@@ -58,6 +60,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
     // binding in the name server
     public static void register(String name,SharedObject_itf so) {
+    	System.out.println("Client register name " + name + "with SharedObject " + so);
     	try {
     		SharedObject so_=(SharedObject)so;
 			Client.server.register(name,so_.getId());
@@ -67,6 +70,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // creation of a shared object
     public static SharedObject create(Object o) {
+    	System.out.println("Client create object " + o);
     	SharedObject res=new SharedObject(o);
     	try {
 			res.setId(Client.server.create(o));
@@ -82,6 +86,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // request a read lock from the server
     public static Object lock_read(int id) {
+    	System.out.println("Client requested lock_read id " + id);
     	Object res=null;
 		try {
 			if (Client.objects.get(id) != null) {
@@ -94,6 +99,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // request a write lock from the server
     public static Object lock_write(int id) {
+    	System.out.println("Client requested lock_write id " + id);
     	Object res=null;
 		try {
 			if (Client.objects.get(id) != null)
@@ -105,6 +111,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // receive a lock reduction request from the server
     public Object reduce_lock(int id) throws java.rmi.RemoteException {
+    	System.out.println("Client received reduce_lock id " + id);
     	SharedObject res=null;
 		if ((res=(SharedObject)Client.objects.get(id)) != null)
 			res.reduce_lock();
@@ -114,6 +121,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // receive a reader invalidation request from the server
     public void invalidate_reader(int id) throws java.rmi.RemoteException {
+    	System.out.println("Client received invalidate_reader id " + id);
     	SharedObject res=null;
 		if ((res=(SharedObject)Client.objects.get(id)) != null)
 			res.invalidate_reader();
@@ -122,6 +130,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
     // receive a writer invalidation request from the server
     public Object invalidate_writer(int id) throws java.rmi.RemoteException {
+    	System.out.println("Client received invalidate_writer id " + id);
     	SharedObject res=null;
 		if ((res=(SharedObject)Client.objects.get(id)) != null)
 			res.invalidate_writer();

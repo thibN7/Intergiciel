@@ -41,8 +41,9 @@ public class ServerObject {
 
 	// LOCK_WRITE
 	public Object lock_write(Client_itf client) throws RemoteException {
-		String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"ServerObject lock_write (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+		System.out.println("ServerObject received lock_write from client " + client);
+		//String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	//SharedObject.dump(1,"ServerObject lock_write (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		Object obj ;
 
@@ -74,8 +75,8 @@ public class ServerObject {
 		System.out.println("Etat du ServerObject après lock_write : " + this.lockState);
 
 		mutexMonitor.unlock();
-		d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"ServerObject lock_write (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+		//d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	//SharedObject.dump(1,"ServerObject lock_write (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		return obj;		
 	}
@@ -83,8 +84,9 @@ public class ServerObject {
 
 	// LOCK_READ
 	public Object lock_read(Client_itf client) throws RemoteException {
-		String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"ServerObject lock_read (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+		System.out.println("ServerObject received lock_read from client " + client);
+		//String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	//SharedObject.dump(1,"ServerObject lock_read (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		mutexMonitor.lock();
 
@@ -104,8 +106,8 @@ public class ServerObject {
 		System.out.println("Etat du ServerObject apres lock_read : " + this.lockState);
 
 		mutexMonitor.unlock();
-		d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"ServerObject lock_read (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+		//d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
+    	//SharedObject.dump(1,"ServerObject lock_read (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
 
 		return this.object;
 	}
