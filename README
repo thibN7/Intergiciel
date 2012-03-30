@@ -17,4 +17,6 @@ git push origin nom_prenom
 TODO
 
 - Classe SharedObject : Attente x4 : à coder
-
+- Classe Client :
+		--> Methodes sychronized
+		--> wait / notify
