@@ -30,18 +30,10 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public void setId(int id) {
 		this.id=id;
 	}
-	public static void dump(long id,String data) {
-		System.out.println("[" + id + "] " + data);
-	}
-	public static void exit(String data) {
-		System.out.println(data);
-		System.out.println("[Fin du processus]");
-		System.exit(0);
-	}
 	
     // invoked by the user program on the client node
     public void lock_read() {
-    	dump(Client.debug_id,"lock_read -->");
+    	Debug.dump(Client.debug_id,"lock_read (start) --> (state: " + this.lockState + ")");
     	synchronized(this) {
 	    	switch (this.lockState) {
 	    		case NL: this.obj=Client.lock_read(this.id); this.lockState=LockState.RLT; break;
@@ -50,14 +42,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	    		case RLT: //Erreur
 	    		case WLT: //Erreur
 	    		case RLT_WLC: //Erreur
-	    			exit("lock_read invalide");
+	    			Debug.exit("lock_read invalide");
 	    	}
 	    }
+    	Debug.dump(Client.debug_id,"lock_read (end) --> (state: " + this.lockState + ")");
     }
 
     // invoked by the user program on the client node
     public void lock_write() {
-    	dump(Client.debug_id,"lock_write -->");
+    	Debug.dump(Client.debug_id,"lock_write (start) --> (state: " + this.lockState + ")");
     	synchronized(this) {
 	    	switch (this.lockState) {
 	    		case NL: this.obj=Client.lock_write(this.id); this.lockState=LockState.WLT; break;
@@ -66,14 +59,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	    		case WLT: //Erreur
 	    		case RLT: //Erreur
 	    		case RLT_WLC: //Erreur
-	    			exit("lock_write invalide");
+	    			Debug.exit("lock_write invalide");
 	    	}
     	}
+    	Debug.dump(Client.debug_id,"lock_write (end) --> (state: " + this.lockState + ")");
     }
 
     // invoked by the user program on the client node
     public synchronized void unlock() {
-    	dump(Client.debug_id,"unlock -->");
+    	Debug.dump(Client.debug_id,"unlock (start) --> (state: " + this.lockState + ")");
     	switch(this.lockState) {
     		case RLT: this.lockState=LockState.RLC; break;
     		case WLT: this.lockState=LockState.WLC; break;
@@ -81,14 +75,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
     		case WLC: //Erreur
     		case RLC: //Erreur
     		case NL: //Erreur
-    			exit("unlock invalide");
+    			Debug.exit("unlock invalide");
     	}
+    	Debug.dump(Client.debug_id,"unlock (end) --> (state: " + this.lockState + ")");
     }
 
 
     // callback invoked remotely by the server
     public synchronized Object reduce_lock() {
-    	dump(Client.debug_id,"<-- reduce_lock");
+    	Debug.dump(Client.debug_id,"<-- reduce_lock (start) (state: " + this.lockState + ")");
     	SharedObject so=new SharedObject(null);
     	switch(this.lockState) {
     		case WLT: this.lockState=LockState.RLC; break;
@@ -97,14 +92,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
     		case RLT: //Erreur
     		case RLC: //Erreur
     		case NL: //Erreur
-    			exit("reduce_lock invalide");
+    			Debug.exit("reduce_lock invalide");
     	}
+    	Debug.dump(Client.debug_id,"<-- reduce_lock (end) (state: " + this.lockState + ")");
     	return so.obj;
     }
 
     // callback invoked remotely by the server
     public synchronized void invalidate_reader() {
-    	dump(Client.debug_id,"<-- invalidate_reader");
+    	Debug.dump(Client.debug_id,"<-- invalidate_reader (start) (state: " + this.lockState + ")");
     	switch(this.lockState) {
     		case RLT: this.lockState=LockState.NL; break;
     		case RLC: this.lockState=LockState.NL; break;
@@ -112,12 +108,13 @@ public class SharedObject implements Serializable, SharedObject_itf {
     		case WLT: //Erreur
     		case WLC: //Erreur
     		case NL: //Erreur
-    			exit("invalidate_reader invalide");
+    			Debug.exit("invalidate_reader invalide");
     	}
+    	Debug.dump(Client.debug_id,"<-- invalidate_reader (end) (state: " + this.lockState + ")");
     }
 
     public synchronized Object invalidate_writer() {
-    	dump(Client.debug_id,"<-- invalidate_writer");
+    	Debug.dump(Client.debug_id,"<-- invalidate_writer (start) (state: " + this.lockState + ")");
     	SharedObject so=new SharedObject(null);
     	switch(this.lockState) {
     		case WLT: this.lockState=LockState.NL; break;
@@ -126,8 +123,9 @@ public class SharedObject implements Serializable, SharedObject_itf {
     		case RLT: //Erreur
     		case RLC: //Erreur
     		case NL: //Erreur
-    			exit("invalidate_writer invalide");
+    			Debug.exit("invalidate_writer invalide");
     	}
+    	Debug.dump(Client.debug_id,"<-- invalidate_writer (end) (state: " + this.lockState + ")");
     	return so.obj;
     }
 }

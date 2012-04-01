@@ -9,15 +9,14 @@ import java.util.*;
 public class Client extends UnicastRemoteObject implements Client_itf {
 	private static Server_itf server;
 	private static Client client;
-	public static long debug_id=System.currentTimeMillis();
-	public long idebug_id=Client.debug_id;
+	public static String debug_id="...";//System.currentTimeMillis();
     private static HashMap<Integer,SharedObject_itf> objects=new HashMap<Integer,SharedObject_itf>();
 
     public Client() throws RemoteException {
         super();
     }
     
-    public long get_debugId() {
+    public String get_debugId() {
     	return Client.debug_id;
     }
 

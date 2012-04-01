@@ -23,7 +23,7 @@ public class Server extends UnicastRemoteObject implements Server_itf, Serializa
             Naming.bind("rmi://localhost:" + port + "/TVServer",new Server());
         }
         catch (Exception e) { System.err.println(e); }
-        System.out.println ("Le serveur est pret.");
+        Debug.msg("Le serveur est pret.");
     }
     
 	public int lookup(String name) throws RemoteException {

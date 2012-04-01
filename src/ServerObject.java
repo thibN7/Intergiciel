@@ -16,6 +16,14 @@ public class ServerObject {
 	private ArrayList<Client_itf> listReaders = new ArrayList<Client_itf>() ;
 	private Client_itf writer =null;
 	private final Lock mutexMonitor = new ReentrantLock();
+	
+	public void flush() {
+    	Debug.dumpStateServer("Server","<-- flush (start)",this,this.writer,this.listReaders);
+		((Sentence)this.object).write("");
+		this.writer=null;
+		this.listReaders.clear();
+    	Debug.dumpStateServer("Server","<-- flush (end)",this,this.writer,this.listReaders);
+	}
 
 	// Constructor
 	public ServerObject(int id, Object object) {
@@ -36,8 +44,7 @@ public class ServerObject {
 
 	// LOCK_WRITE
 	public Object lock_write(Client_itf client) throws RemoteException {
-		String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"lock_write (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+    	Debug.dumpStateServer("Server","lock_write (start) -->",this,this.writer,this.listReaders);
 
 		Object obj ;
 
@@ -61,8 +68,8 @@ public class ServerObject {
 		this.writer = client;
 
 		mutexMonitor.unlock();
-		d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"lock_write (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+
+    	Debug.dumpStateServer("Server","lock_write (end) -->",this,this.writer,this.listReaders);
 
 		return obj;		
 	}
@@ -70,8 +77,7 @@ public class ServerObject {
 
 	// LOCK_READ
 	public Object lock_read(Client_itf client) throws RemoteException {
-		String d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"lock_read (start) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+    	Debug.dumpStateServer("Server","lock_read (start) -->",this,this.writer,this.listReaders);
 
 		mutexMonitor.lock();
 
@@ -83,8 +89,8 @@ public class ServerObject {
 		this.listReaders.add(client);
 
 		mutexMonitor.unlock();
-		d=""; for(Client_itf a : this.listReaders) d+=", "+a.get_debugId();
-    	SharedObject.dump(1,"lock_read (end) --> (" + ((!this.writerExists())?"aucun":this.writer.get_debugId()) +  d + ")");
+
+    	Debug.dumpStateServer("Server","lock_read (end) -->",this,this.writer,this.listReaders);
 
 		return this.object;
 	}
