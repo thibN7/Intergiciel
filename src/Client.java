@@ -19,6 +19,13 @@ public class Client extends UnicastRemoteObject implements Client_itf {
     public String get_debugId() {
     	return Client.debug_id;
     }
+    
+    public static void flush(int id) {
+		if (Client.objects.get(id) != null) try {
+			Client.server.flush(id);
+		}
+		catch(RemoteException e) { e.printStackTrace(); }
+    }
 
 
     ///////////////////////////////////////////////////

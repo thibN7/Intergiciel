@@ -128,4 +128,8 @@ public class SharedObject implements Serializable, SharedObject_itf {
     	Debug.dump(Client.debug_id,"<-- invalidate_writer (end) (state: " + this.lockState + ")");
     	return so.obj;
     }
+    
+    public void flush() {
+    	Client.flush(this.id);
+    }
 }

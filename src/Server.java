@@ -16,6 +16,10 @@ public class Server extends UnicastRemoteObject implements Server_itf, Serializa
 		super();
 	}
 	
+	public void flush(int id) {
+		(this.servers.get(id)).flush();
+	}
+	
     public static void main (String args[]) {
         try {
         	int port=8081;
@@ -33,7 +37,9 @@ public class Server extends UnicastRemoteObject implements Server_itf, Serializa
 		if (this.servers.get(id) != null) this.name_server.put(name,id);
 	}
 	public int create(Object o) throws RemoteException {
-		this.servers.put(Server.object_id,new ServerObject(Server.object_id,o));
+		ServerObject serv=new ServerObject(Server.object_id,o);
+		Debug.addServer(serv);
+		this.servers.put(Server.object_id,serv);
 		return Server.object_id++;
 	}
 	public Object lock_read(int id,Client_itf client) throws RemoteException {

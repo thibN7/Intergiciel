@@ -58,6 +58,7 @@ public class Irc extends JFrame {
         this.add(button3);
         Button button4=new Button("[ flush remote so ]");
         button4.addActionListener(new flushListener(this));
+        button4.setEnabled(false);
         this.add(button4);
         Button read_button=new Button("< read content");
         read_button.addActionListener(new readListener(this));
@@ -163,7 +164,7 @@ class flushListener implements ActionListener {
     	this.irc = i;
     }
     public void actionPerformed(ActionEvent e) {
-        this.irc.sentence.unlock();
+        this.irc.sentence.flush();
     }
 }
 
